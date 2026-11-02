@@ -8,24 +8,39 @@ This is the shortest installation path. There is no manual repository clone, ZIP
 
 ### Prerequisites
 
-- A current Codex CLI supporting `codex plugin marketplace add` and a compatible ChatGPT Desktop/local Codex client.
+- A compatible ChatGPT Desktop/local Codex client with plugin marketplace support. **Codex CLI is not required for GUI installation.**
 - Git and [uv](https://docs.astral.sh/uv/getting-started/installation/) installed and available on PATH, including when launched by the desktop app.
 - Python 3.12 or newer, either installed locally or managed by uv. Use the [official uv Python installation guide](https://docs.astral.sh/uv/guides/install-python/) if Python is missing.
 - Internet access to fetch the Git repository, prepare the Python environment and contact Garmin.
 
-Check your terminal setup:
+The GUI handles marketplace registration and plugin installation. It does not install the source runtime prerequisites for you. If needed, check Git and uv from a terminal:
 
 ```sh
-codex plugin marketplace --help
 git --version
 uv --version
 ```
 
-If the Codex command is unavailable, update/install Codex before continuing. The GitHub marketplace serves the source package and uses the `uv` command from `mcp.json`. Registering it does **not** automatically install a standalone release or remove the uv prerequisite.
+The GitHub marketplace serves the source package and uses the `uv` command from `mcp.json`. Registering it does **not** automatically install a standalone release or remove the uv prerequisite. You can install from the GUI without a `codex` command; a fully runtime-bundled installation requires a published [standalone release](#standalone-release).
 
 ### 1. Register this GitHub repository
 
-Run from any directory:
+In ChatGPT Desktop, open **Plugins**, open the marketplace/source controls and choose **Aggiungi marketplace di plugin** (Add plugin marketplace). In the dialog shown by the Italian client, enter:
+
+| Field | What to enter |
+| --- | --- |
+| **Origine** | `https://github.com/deved-it/garmin-connect-plugin.git` |
+| **Riferimento Git** | `main` |
+| **Percorsi selettivi** | Leave empty — do not enter `plugin/codex` or `.agents/plugins` |
+
+Click **Aggiungi marketplace** and wait for the repository to be fetched. The example text inside an empty field is a placeholder, not a value you need to copy. Menu labels and availability can vary by client version and workspace policy.
+
+Point to the repository, **not** a `raw.githubusercontent.com` JSON URL, an individual file or a ZIP URL. The client discovers `.agents/plugins/marketplace.json`; no manual catalog generation is needed. Selective paths must stay empty because this plugin's runtime, lockfile and skills also live elsewhere in the repository.
+
+The Git reference `main` follows our current development branch. A future release tag can be used instead to pin an installation to a tested version.
+
+#### Optional CLI alternative
+
+Only if you already use a current Codex CLI, you can replace the GUI registration step with these commands, run from any directory:
 
 ```sh
 codex plugin marketplace add deved-it/garmin-connect-plugin --ref main
@@ -38,15 +53,13 @@ Equivalent full Git URL:
 codex plugin marketplace add https://github.com/deved-it/garmin-connect-plugin.git --ref main
 ```
 
-Choose one form, not both. Point to the repository, **not** a `raw.githubusercontent.com` JSON URL, an individual file or a ZIP URL. Codex fetches the repository and discovers `.agents/plugins/marketplace.json`; no manual catalog generation is needed.
-
-`--ref main` follows the current development branch. A future release tag can be used instead to pin an installation to a tested version. Do not add `--sparse .agents/plugins`: this plugin's runtime, lockfile and skills also live elsewhere in the repository.
+Choose one form, not both. Do not add `--sparse .agents/plugins`. Continue with the same installation step below; CLI registration is not required in addition to GUI registration.
 
 ### 2. Install the plugin
 
-Restart ChatGPT Desktop. Open **Plugins**, select **Garmin Personal (local)** from the marketplace/source picker, then install **garmin-personal**. Adding a marketplace and installing a plugin are separate steps. Open a new locally executed thread after installation.
+Open **Plugins**, select **Garmin Personal (local)** from the marketplace/source picker, then install **garmin-personal**. Adding a marketplace and installing a plugin are separate steps. Restart ChatGPT Desktop if the new source is not visible, and open a new locally executed thread after installation.
 
-The CLI command registers the source; installation and native settings depend on the host's supported plugin UI and workspace policies. If the source does not appear, first confirm it is listed by `codex plugin marketplace list`, then consult the [official marketplace documentation](https://developers.openai.com/plugins/build/plugins#add-a-marketplace-from-the-cli).
+If the source does not appear, check the marketplace list in the GUI and verify the origin and Git reference above. If you chose the CLI route, `codex plugin marketplace list` is an additional diagnostic. Installation and native settings depend on the host's supported plugin UI and workspace policies; see the [official marketplace documentation](https://developers.openai.com/plugins/build/plugins).
 
 ### 3. Configure a Personal API Key
 
@@ -61,6 +74,10 @@ In the new thread, ask Garmin Personal to validate the connection (`garmin_statu
 The first server startup uses `uv run --locked --no-dev` to prepare the environment. Dependency downloads can make the first call slower; subsequent starts reuse the cached environment. If startup reports that `uv` cannot be found, fix the desktop app's PATH and restart it.
 
 ### Update a GitHub installation
+
+In the plugin/marketplace management UI, use its refresh/update action if your client provides one, then update the installed **garmin-personal** plugin if offered. Check the version in the plugin details. If the GUI has no update action, remove the plugin and marketplace through their management controls, add the same GitHub origin again with `main` and empty selective paths, then reinstall the plugin. Keep the separate private configuration directory: you do not need to re-enter or expose your key.
+
+If you have Codex CLI installed, the optional terminal alternative is:
 
 ```sh
 codex plugin marketplace upgrade garmin-personal-local
@@ -111,9 +128,11 @@ On other platforms (macOS Intel, Windows ARM64, Linux), source installation is t
 
 ## Register the marketplace
 
-This alternative is only for an extracted standalone archive or a manual source checkout. For direct GitHub installation, use the repository command above instead.
+This alternative is only for an extracted standalone archive or a manual source checkout. For direct GitHub installation, use the GUI repository instructions above instead.
 
-From a current Codex CLI:
+In **Aggiungi marketplace di plugin**, set **Origine** to the absolute path of the persistent extracted folder or checkout. Leave **Riferimento Git** and **Percorsi selettivi** empty for a local folder, then click **Aggiungi marketplace**.
+
+Alternatively, from a current Codex CLI:
 
 ```sh
 codex plugin marketplace add /absolute/path/to/extracted-folder-or-checkout
@@ -151,13 +170,13 @@ Keys are stored in the platform user configuration directory under `garmin-perso
 
 ## Update and uninstall
 
-For a direct GitHub installation, run `codex plugin marketplace upgrade garmin-personal-local`, restart the app and open a new thread. For a standalone/manual installation, replace the plugin folder with the verified newer version, keep the separate private configuration directory, refresh the marketplace and restart the app. Keep the folder path stable or register the new path.
+For a direct GitHub installation, follow [Update a GitHub installation](#update-a-github-installation), using the GUI or optional CLI. For a standalone/manual installation, replace the plugin folder with the verified newer version, keep the separate private configuration directory, refresh the marketplace and restart the app. Keep the folder path stable or register the new path.
 
-To uninstall, remove/disable the plugin in your host and remove the marketplace with `codex plugin marketplace remove garmin-personal-local`. Remove only the extracted plugin folder and, if desired, its dedicated `garmin-personal` configuration directory after confirming the exact path. Revoke the key in Garmin Connect to invalidate access. Uninstalling alone does not revoke a Garmin key.
+To uninstall, remove/disable the plugin and remove its marketplace through the host's management UI. If you use Codex CLI, `codex plugin marketplace remove garmin-personal-local` is an alternative for removing the marketplace. Remove only the extracted plugin folder and, if desired, its dedicated `garmin-personal` configuration directory after confirming the exact path. Revoke the key in Garmin Connect to invalidate access. Uninstalling alone does not revoke a Garmin key.
 
 ## Troubleshooting
 
-- **“Unable to load or save settings” / “Impossibile caricare o salvare le impostazioni” on version 0.1.0:** the settings tools returned text-only JSON instead of the required structured result and output schema. Update to **0.1.1 or newer** with `codex plugin marketplace upgrade garmin-personal-local`, fully quit and reopen ChatGPT Desktop, then check the version in the plugin details. If it still shows 0.1.0, update/reinstall the plugin from the refreshed marketplace and restart again. Removing the installed plugin does not remove its separately stored key. Do not regenerate or paste your API key to fix this protocol error.
+- **“Unable to load or save settings” / “Impossibile caricare o salvare le impostazioni” on version 0.1.0:** the settings tools returned text-only JSON instead of the required structured result and output schema. [Update to **0.1.1 or newer**](#update-a-github-installation) through the GUI or optional CLI, fully quit and reopen ChatGPT Desktop, then check the version in the plugin details. If it still shows 0.1.0, update/reinstall the plugin from the refreshed marketplace and restart again. Removing the installed plugin does not remove its separately stored key. Do not regenerate or paste your API key to fix this protocol error.
 - `NOT_CONFIGURED`: configure a key locally; check empty or stale environment overrides.
 - `AUTH_EXPIRED_OR_REVOKED`: generate a new key in Garmin settings and replace the local one.
 - `FORBIDDEN`: the endpoint is not available to this account/key.

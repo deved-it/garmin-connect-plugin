@@ -18,30 +18,36 @@ It **cannot write to Garmin Connect**: no workout upload, scheduling, course imp
 
 ### From GitHub — recommended
 
-You do not need to clone this repository or download a ZIP manually. You need a current **Codex CLI**, **Git**, **uv** and **Python 3.12+** (installed locally or managed by uv). Git and uv must be available on the desktop app's PATH. See [prerequisites and troubleshooting](docs/INSTALL.md#prerequisites).
+You do not need to clone this repository, download a ZIP manually or install **Codex CLI**. Use a compatible ChatGPT Desktop client with the **Add plugin marketplace** dialog. This source-based installation still needs **Git**, **uv** and **Python 3.12+** (installed locally or managed by uv). Git and uv must be available on the desktop app's PATH. See [prerequisites and troubleshooting](docs/INSTALL.md#prerequisites).
 
-**1. Add the GitHub marketplace:**
+**1. Add the marketplace from the GUI:** open **Plugins**, open the marketplace/source controls and choose **Aggiungi marketplace di plugin** (Add plugin marketplace). Fill in the dialog as follows:
+
+| Field in the Italian UI | Value |
+| --- | --- |
+| **Origine** | `https://github.com/deved-it/garmin-connect-plugin.git` |
+| **Riferimento Git** | `main` |
+| **Percorsi selettivi** | Leave empty |
+
+Click **Aggiungi marketplace**. Leave selective paths empty because the plugin needs the whole repository, not just its catalog. This adds the marketplace; it does not install the plugin yet.
+
+**2. Install in ChatGPT Desktop:** select the **Garmin Personal (local)** marketplace/source and install **garmin-personal**. Restart the app if needed and start a new locally executed thread. Menu labels and availability depend on client version and workspace policy.
+
+**3. Configure your key:** generate a personal key in [Garmin Connect settings](https://connect.garmin.com/app/settings/personalApiToken), then open the plugin settings → **Collegamento Garmin → Configura chiave API**. Save it in the masked form. Never paste it into the conversation. If the host does not support this form, use the [hidden-input terminal fallback](docs/INSTALL.md#native-masked-configuration).
+
+**4. Verify:** ask the plugin to check the connection, using `garmin_status(validate_connection=true)`, then request your first report. On first use, uv prepares the locked Python environment and may need Internet access to download dependencies. This path runs the **source package**, not the standalone executable.
+
+No public OpenAI catalog listing or remote MCP URL is required. The included marketplace catalog is discovered automatically from GitHub. See [updating a GitHub installation](docs/INSTALL.md#update-a-github-installation). We currently develop directly on `main`.
+
+### Optional: register using Codex CLI
+
+If you already use Codex CLI, these commands are an alternative to step 1 above, not an additional requirement:
 
 ```sh
 codex plugin marketplace add deved-it/garmin-connect-plugin --ref main
 codex plugin marketplace list
 ```
 
-The full Git URL works too: `codex plugin marketplace add https://github.com/deved-it/garmin-connect-plugin.git --ref main`. Use either form, not both. This adds the marketplace; it does not install the plugin yet.
-
-**2. Install in ChatGPT Desktop:** restart the app, open **Plugins**, select the **Garmin Personal (local)** marketplace/source and install **garmin-personal**. Start a new locally executed thread. Menu labels and availability depend on client version and workspace policy.
-
-**3. Configure your key:** generate a personal key in [Garmin Connect settings](https://connect.garmin.com/app/settings/personalApiToken), then open the plugin settings → **Collegamento Garmin → Configura chiave API**. Save it in the masked form. Never paste it into the conversation. If the host does not support this form, use the [hidden-input terminal fallback](docs/INSTALL.md#native-masked-configuration).
-
-**4. Verify:** ask the plugin to check the connection, using `garmin_status(validate_connection=true)`, then request your first report. On first use, uv prepares the locked Python environment and may need Internet access to download dependencies. This path runs the **source package**, not the standalone executable.
-
-No public OpenAI catalog listing or remote MCP URL is required. The included marketplace catalog is discovered automatically from GitHub. For updates:
-
-```sh
-codex plugin marketplace upgrade garmin-personal-local
-```
-
-Restart the desktop app and open a new thread after updating. We currently develop directly on `main`, so `--ref main` follows that branch.
+The full Git URL works too: `codex plugin marketplace add https://github.com/deved-it/garmin-connect-plugin.git --ref main`. Use either form, not both, then continue with step 2 above.
 
 ### Alternative installation paths
 
