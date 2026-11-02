@@ -188,6 +188,38 @@ To uninstall, remove/disable the plugin and remove its marketplace through the h
 
 ## Release verification
 
+### Automatic publication for maintainers
+
+The **Build and release standalone packages** GitHub Actions workflow builds and
+tests macOS Apple Silicon and Windows x64 packages. Pushing a version tag such as
+`v0.1.2` publishes a GitHub Release only after **both** native builds and their
+archive smoke tests succeed. Before creating a tag, ensure its version matches
+`plugin.json`, `pyproject.toml`, the source version and `uv.lock`, and that the
+tag points to the intended reviewed commit on `main`.
+
+The release includes both platform ZIPs and their `.zip.sha256` files, with
+automatically generated release notes. Tags beginning with `v0.` and tags with a
+prerelease suffix (for example `v1.0.0-rc.1`) are marked **prerelease** and are not
+marked Latest. Ordinary stable version tags produce stable releases.
+
+Running the workflow manually produces downloadable Actions artifacts only;
+it never publishes, even when the selected reference is a tag. Publication uses
+the repository's automatic `GITHUB_TOKEN` with write access restricted to the
+publication job; no personal access token or Garmin key is needed. Repository
+or organization policies may still prevent release creation.
+
+New releases are prepared as drafts, and published after all four assets have
+been verified and uploaded. Rerunning a successful tag workflow reuses the same
+release and replaces same-name assets; it does not create another release or
+delete its tag. Asset replacement is not atomic: an interrupted replacement can
+require a rerun. If immutable releases are enabled, published assets cannot be
+replaced; publish a new version tag instead. Do not move a published version tag.
+
+Automatic publication does not sign/notarize the packages or certify their native
+ChatGPT UI behavior. The local opt-in checks below remain separate from CI.
+
+### Native and real-account checks
+
 Public CI uses synthetic data only; it must never receive a personal Garmin key. Build release candidates natively and smoke-test extracted archives with Python/uv absent from the server process PATH. Windows execution must be verified on Windows; a Mac build is not evidence for Windows.
 
 Before publishing, the maintainer opts in locally to a real-account check: configure through hidden input, validate connection, request recent activities, sleep, HRV, heart rate, stress, Body Battery, a partial-safe report and one activity ZIP. Record only version, endpoint, timestamp and pass/fail; never commit personal results, token files or screenshots containing keys.
