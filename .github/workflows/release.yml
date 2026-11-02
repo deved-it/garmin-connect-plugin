@@ -1,0 +1,35 @@
+name: Build standalone candidates
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            target: macos-arm64
+          - os: windows-latest
+            target: windows-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.13.6'
+          python-version: '3.12'
+      - run: uv sync --locked --all-groups
+      - run: uv run pytest
+      - run: uv run python scripts/build_release.py
+      - run: uv run python scripts/smoke_package.py --archive dist/releases/garmin-personal-plugin-${{ matrix.target }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: garmin-personal-plugin-${{ matrix.target }}
+          path: |
+            dist/releases/*.zip
+            dist/releases/*.sha256
+          if-no-files-found: error

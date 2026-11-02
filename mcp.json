@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "garmin-personal": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--project", "${PLUGIN_ROOT}", "--locked", "--no-dev", "garmin-personal-plugin", "serve"],
+      "cwd": "${PLUGIN_ROOT}",
+      "env": {"GARMIN_PLUGIN_ROOT": "${PLUGIN_ROOT}"}
+    }
+  }
+}

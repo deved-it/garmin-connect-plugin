@@ -1,0 +1,6 @@
+Garmin Personal plugin
+Copyright 2026 Garmin Personal plugin contributors
+
+This independent project uses garmin-connect-personal-api-python, Copyright 2026 Garmin Ltd. or its subsidiaries, licensed under Apache License 2.0.
+Garmin and Garmin Connect are trademarks of Garmin. No endorsement by Garmin or OpenAI is implied.
+Standalone packages bundle third-party Python components; their license notices are included by the release build.

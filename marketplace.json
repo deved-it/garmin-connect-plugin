@@ -1,0 +1,5 @@
+{
+  "name": "garmin-personal-local",
+  "interface": {"displayName": "Garmin Personal (local)"},
+  "plugins": [{"name": "garmin-personal", "source": {"source": "local", "path": "./"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"}, "category": "Productivity"}]
+}
