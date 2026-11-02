@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; form-action 'none'">
+<title>Collegamento Garmin</title>
+<style>
+:root{color-scheme:light dark;font:15px system-ui,sans-serif}body{margin:0;padding:24px;max-width:560px}h1{font-size:22px;margin:0 0 12px}p{line-height:1.5;opacity:.8}label{display:block;margin:24px 0 8px}input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #8888;border-radius:8px;font:inherit}button{margin-top:16px;padding:10px 20px;border:0;border-radius:8px;background:#16745d;color:white;font:inherit;cursor:pointer}button:disabled{opacity:.5;cursor:wait}#status{min-height:42px}
+</style>
+<h1>Collegamento Garmin</h1>
+<p>La chiave viene salvata sul tuo computer e inviata solo a Garmin. Non incollarla nella conversazione.</p>
+<form id="form" autocomplete="off">
+<label for="key">Garmin Connect Personal API Key</label>
+<input id="key" type="password" autocomplete="off" spellcheck="false" maxlength="8192" required>
+<button id="save" type="submit" disabled>Salva localmente</button>
+</form>
+<p id="status" role="status" aria-live="polite">Connessione all’app in corso…</p>
+<script>
+(() => {
+  'use strict';
+  let sequence = 0;
+  const pending = new Map();
+  const status = document.getElementById('status');
+  const save = document.getElementById('save');
+  const key = document.getElementById('key');
+  function rpc(method, params) {
+    return new Promise((resolve, reject) => {
+      const id = ++sequence;
+      const timer = setTimeout(() => {pending.delete(id);reject(new Error('Host timeout'));},15000);
+      pending.set(id,{resolve,reject,timer});
+      window.parent.postMessage({jsonrpc:'2.0',id,method,params},'*');
+    });
+  }
+  window.addEventListener('message',event => {
+    if(event.source !== window.parent || !event.data || event.data.jsonrpc !== '2.0') return;
+    const item = pending.get(event.data.id);
+    if(!item) return;
+    clearTimeout(item.timer);pending.delete(event.data.id);
+    if(event.data.error) item.reject(new Error('Host error'));else item.resolve(event.data.result);
+  });
+  document.getElementById('form').addEventListener('submit',async event => {
+    event.preventDefault();save.disabled=true;
+    try {
+      const value=key.value;key.value='';
+      const result=await rpc('tools/call',{name:'garmin_save_key',arguments:{value}});
+      status.textContent=result.isError?'Salvataggio non riuscito. Usa il comando locale configure.':'Chiave salvata localmente. Le variabili d’ambiente e .env hanno la precedenza.';
+    } catch (_) {
+      status.textContent='Modulo non supportato. Usa il comando locale garmin-personal-plugin configure.';
+    } finally {key.value='';save.disabled=false;}
+  });
+  rpc('ui/initialize',{protocolVersion:'2026-01-26',appInfo:{name:'garmin-configure',version:'0.1.0'},appCapabilities:{}})
+    .then(() => {window.parent.postMessage({jsonrpc:'2.0',method:'ui/notifications/initialized'},'*');save.disabled=false;status.textContent='Il valore non viene inserito nel contesto del modello.';})
+    .catch(() => {status.textContent='Modulo non supportato: usa il comando locale garmin-personal-plugin configure.';});
+})();
+</script>
+</html>
