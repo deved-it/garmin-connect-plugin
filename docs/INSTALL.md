@@ -2,6 +2,72 @@
 
 The plugin runs on your computer. No public MCP endpoint, tunnel, hosted account database or OpenAI catalog submission is required for a local installation. You need a supported local ChatGPT Desktop/Codex client and your own Garmin Personal API Key.
 
+## Install directly from GitHub — recommended
+
+This is the shortest installation path. There is no manual repository clone, ZIP extraction, marketplace editing or `uv sync` step.
+
+### Prerequisites
+
+- A current Codex CLI supporting `codex plugin marketplace add` and a compatible ChatGPT Desktop/local Codex client.
+- Git and [uv](https://docs.astral.sh/uv/getting-started/installation/) installed and available on PATH, including when launched by the desktop app.
+- Python 3.12 or newer, either installed locally or managed by uv. Use the [official uv Python installation guide](https://docs.astral.sh/uv/guides/install-python/) if Python is missing.
+- Internet access to fetch the Git repository, prepare the Python environment and contact Garmin.
+
+Check your terminal setup:
+
+```sh
+codex plugin marketplace --help
+git --version
+uv --version
+```
+
+If the Codex command is unavailable, update/install Codex before continuing. The GitHub marketplace serves the source package and uses the `uv` command from `mcp.json`. Registering it does **not** automatically install a standalone release or remove the uv prerequisite.
+
+### 1. Register this GitHub repository
+
+Run from any directory:
+
+```sh
+codex plugin marketplace add deved-it/garmin-connect-plugin --ref main
+codex plugin marketplace list
+```
+
+Equivalent full Git URL:
+
+```sh
+codex plugin marketplace add https://github.com/deved-it/garmin-connect-plugin.git --ref main
+```
+
+Choose one form, not both. Point to the repository, **not** a `raw.githubusercontent.com` JSON URL, an individual file or a ZIP URL. Codex fetches the repository and discovers `.agents/plugins/marketplace.json`; no manual catalog generation is needed.
+
+`--ref main` follows the current development branch. A future release tag can be used instead to pin an installation to a tested version. Do not add `--sparse .agents/plugins`: this plugin's runtime, lockfile and skills also live elsewhere in the repository.
+
+### 2. Install the plugin
+
+Restart ChatGPT Desktop. Open **Plugins**, select **Garmin Personal (local)** from the marketplace/source picker, then install **garmin-personal**. Adding a marketplace and installing a plugin are separate steps. Open a new locally executed thread after installation.
+
+The CLI command registers the source; installation and native settings depend on the host's supported plugin UI and workspace policies. If the source does not appear, first confirm it is listed by `codex plugin marketplace list`, then consult the [official marketplace documentation](https://developers.openai.com/plugins/build/plugins#add-a-marketplace-from-the-cli).
+
+### 3. Configure a Personal API Key
+
+Create your own key in [Garmin Connect → Settings → Personal API Key](https://connect.garmin.com/app/settings/personalApiToken). Then open plugin details/settings → **Collegamento Garmin → Configura chiave API**. Enter it in the masked form and save locally. Never paste it into a conversation or pass it as a command-line argument.
+
+If the host lacks the form, follow [Native masked configuration](#native-masked-configuration) for the hidden-input fallback. No API key belongs in the GitHub repository or marketplace catalog.
+
+### 4. Validate and use
+
+In the new thread, ask Garmin Personal to validate the connection (`garmin_status(validate_connection=true)`), then request a report. A local `configured` status alone does not prove that Garmin has accepted the key.
+
+The first server startup uses `uv run --locked --no-dev` to prepare the environment. Dependency downloads can make the first call slower; subsequent starts reuse the cached environment. If startup reports that `uv` cannot be found, fix the desktop app's PATH and restart it.
+
+### Update a GitHub installation
+
+```sh
+codex plugin marketplace upgrade garmin-personal-local
+```
+
+Restart the app and open a new thread. No manual `git pull` is needed for this managed installation, and the separately stored private key is not replaced by a repository update.
+
 ## Standalone release
 
 When a maintainer has published a GitHub release, download the archive matching your machine:
@@ -45,6 +111,8 @@ On other platforms (macOS Intel, Windows ARM64, Linux), source installation is t
 
 ## Register the marketplace
 
+This alternative is only for an extracted standalone archive or a manual source checkout. For direct GitHub installation, use the repository command above instead.
+
 From a current Codex CLI:
 
 ```sh
@@ -54,13 +122,21 @@ codex plugin marketplace list
 
 Restart ChatGPT Desktop. In the Plugins directory choose the **Garmin Personal (local)** marketplace/source, install **garmin-personal**, then test in a new locally executed thread. Client versions and workspace policies can change the labels or availability. If the source does not appear, consult the [official local installation documentation](https://developers.openai.com/plugins/build/plugins#install-a-local-plugin-manually). Do not create a remote custom MCP URL for this stdio server.
 
-Once hosted on GitHub, users can register the repository using `codex plugin marketplace add OWNER/REPO --ref <release-tag>`. The repository includes its generated catalog; standalone archives generate the same catalog automatically.
+The repository includes its generated catalog; standalone archives generate the same catalog automatically.
 
 ## Native masked configuration
 
 In a host supporting structured plugin settings and MCP Apps, open plugin details/settings → **Collegamento Garmin → Configura chiave API**. Enter the key into the masked field and click **Salva localmente**. The save tool has app-only visibility; do not attempt to call it from the model.
 
-If the host does not show these settings or rejects the app bridge, use the terminal `configure` command. MCP Apps support and actual native UI behavior must be tested in the target host; command-line smoke tests cannot certify the settings screen.
+If the host does not show these settings or rejects the app bridge, use the terminal `configure` command. For a managed GitHub installation, the host runs a cached copy rather than your current directory. If you know its installed plugin folder, use:
+
+```sh
+uv run --project "/absolute/path/to/installed/plugin" --locked --no-dev garmin-personal-plugin configure
+```
+
+Alternatively, use the manual source checkout procedure above and run `configure` there. Both copies use the same platform-private configuration directory, so the key is available to the installed plugin too. Do not edit the managed cache's `.env` as your primary setup: reinstalling may replace that cache.
+
+MCP Apps support and actual native UI behavior must be tested in the target host; command-line smoke tests cannot certify the settings screen.
 
 ## Advanced key sources and precedence
 
@@ -75,7 +151,7 @@ Keys are stored in the platform user configuration directory under `garmin-perso
 
 ## Update and uninstall
 
-Replace the plugin folder with a verified newer release (keep the separate private configuration directory). Refresh its marketplace with `codex plugin marketplace upgrade garmin-personal-local`, restart the app, and open a new thread. Keep the folder path stable or register the new path.
+For a direct GitHub installation, run `codex plugin marketplace upgrade garmin-personal-local`, restart the app and open a new thread. For a standalone/manual installation, replace the plugin folder with the verified newer version, keep the separate private configuration directory, refresh the marketplace and restart the app. Keep the folder path stable or register the new path.
 
 To uninstall, remove/disable the plugin in your host and remove the marketplace with `codex plugin marketplace remove garmin-personal-local`. Remove only the extracted plugin folder and, if desired, its dedicated `garmin-personal` configuration directory after confirming the exact path. Revoke the key in Garmin Connect to invalidate access. Uninstalling alone does not revoke a Garmin key.
 

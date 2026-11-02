@@ -39,3 +39,7 @@ Ruling: standalone artifacts are unsigned development candidates. Native signing
 Ruling: the approved generator successfully created the actual repo .agents marketplace catalog. The earlier template-only constraint is resolved; direct Git-backed distribution can include the catalog.
 
 Security finding: `.env` was already tracked in the pre-existing `f6eb947` initial commit. Removed only from the index, not from disk. Publishing this ancestry would disclose the original credential file. Prepare an independent root publication commit/branch from the credential-free index; preserve existing refs and history locally. Never push old refs or use `--all`/`--mirror` for publication.
+
+## Subsequent repository integration
+
+The maintainer merged PR #1 into main. At the user's explicit request, development now continues directly on main and the publish/garmin-personal branch is retired. The previous clean-root-only publication guidance above records the earlier decision; it is not the current installation instruction. The original main history still requires revoking/rotating the old key. README and installation docs now lead with `codex plugin marketplace add deved-it/garmin-connect-plugin --ref main`, followed by desktop installation and masked key configuration, explicitly documenting uv/Git/Python prerequisites and managed updates.

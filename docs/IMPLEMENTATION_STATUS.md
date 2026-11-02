@@ -1,8 +1,8 @@
 # Implementation and verification status
 
-Version: **0.1.0 development preview**, branch `feat/garmin-personal`.
+Version: **0.1.0 development preview**. Development and GitHub marketplace installation currently follow `main`.
 
-Publication safety: the original repository's first commit tracked `.env`. The working file is preserved and now ignored. Publish only the independent clean-history `publish/garmin-personal` branch prepared for distribution, never the original refs or a mirror of the repository. No history was rewritten and no remote was contacted.
+Publication safety: the original repository's first commit tracked `.env`. That file has been removed from `main` and is now ignored; the local working copy is preserved. The plugin has been merged into `main`, and the separate `publish/garmin-personal` branch is being retired. The original credential remains in earlier `main` history, so the old key must be revoked/rotated. No history rewrite is implied by removing a file from the current commit.
 
 ## Implemented
 
@@ -28,7 +28,7 @@ Publication safety: the original repository's first commit tracked `.env`. The w
 - No real Garmin account calls: the provided local key was not used. Endpoint payload support is based on official client interfaces and synthetic fixtures, not universal real-account coverage.
 - Native ChatGPT Desktop/Codex installation and actual structured-settings host interaction were not exercised.
 - Windows standalone generation/execution and the GitHub CI matrix have not run here. The workflow is provided, not certified as passing.
-- macOS developer signing/notarization, OpenAI public catalog approval, GitHub push and release publication were not performed.
+- macOS developer signing/notarization, OpenAI public catalog approval and release publication were not performed. The source code has been pushed to GitHub and merged into `main`.
 - FIT lap/record parsing, workout writes, scheduling and route import are outside this preview.
 
 See [installation and release checks](INSTALL.md), [privacy](PRIVACY.md) and [execution decisions](superpowers/plans/progress.md).
