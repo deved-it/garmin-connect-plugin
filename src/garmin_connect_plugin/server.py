@@ -17,6 +17,7 @@ from .container import ServiceContainer
 from .credentials import save_key
 from .errors import ErrorCode, PluginError, map_error
 from .models import ActivityQuery, HealthQuery, ReportRequest
+from .settings_contract import SettingsReadResult, SettingsUpdateResult
 
 UI_URI = "ui://garmin-personal/configure-v1.html"
 READ_ONLY = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=False)
@@ -198,24 +199,29 @@ def create_server(services: ServiceContainer | None = None) -> GarminMCP:
     def activity_resource(activity_id: str, nonce: str) -> bytes:
         return services.resources.read(f"garmin-activity://{activity_id}/{nonce}")
 
-    @server.tool(name="garmin_settings_read", annotations=READ_ONLY, meta=APP_ONLY)
-    def settings_read() -> dict:
-        return {
-            "schema": {"type": "object", "properties": {}},
-            "values": {},
-            "layout": [
-                {
-                    "kind": "group",
-                    "title": "Collegamento Garmin",
-                    "items": [{"kind": "tool", "tool": "garmin_configure"}],
-                }
-            ],
-        }
+    @server.tool(name="garmin_settings_read", annotations=READ_ONLY, meta=APP_ONLY, structured_output=True)
+    def settings_read() -> SettingsReadResult:
+        return SettingsReadResult.model_validate(
+            {
+                "schema": {"type": "object", "properties": {}},
+                "values": {},
+                "layout": [
+                    {
+                        "kind": "group",
+                        "title": "Collegamento Garmin",
+                        "items": [{"kind": "tool", "tool": "garmin_configure"}],
+                    }
+                ],
+            }
+        )
 
     @server.tool(
-        name="garmin_settings_update", annotations=ToolAnnotations(readOnlyHint=False), meta=APP_ONLY
+        name="garmin_settings_update",
+        annotations=ToolAnnotations(readOnlyHint=False),
+        meta=APP_ONLY,
+        structured_output=True,
     )
-    def settings_update(set: dict[str, Any]) -> dict:
+    def settings_update(set: dict[str, Any]) -> SettingsUpdateResult:
         return {"status": "ok" if not set else "unsupported", "values": {}}
 
     @server.tool(
@@ -223,8 +229,9 @@ def create_server(services: ServiceContainer | None = None) -> GarminMCP:
         title="Configura chiave API",
         annotations=READ_ONLY,
         meta={"ui": {"visibility": ["app"], "resourceUri": UI_URI}},
+        structured_output=True,
     )
-    def configure() -> dict:
+    def configure() -> dict[str, str]:
         return {"status": "ok", "message": "Insert your key in the masked local configuration form."}
 
     @server.tool(

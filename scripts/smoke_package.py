@@ -71,10 +71,16 @@ async def smoke(root: Path, source: bool) -> None:
                     initialized.capabilities.experimental["openai/settings"]["readTool"]
                     == "garmin_settings_read"
                 )
+                settings_tool = next(tool for tool in tools.tools if tool.name == "garmin_settings_read")
+                assert settings_tool.outputSchema is not None
+                assert {"schema", "values"} <= set(settings_tool.outputSchema["required"])
+                settings_result = await session.call_tool(settings_tool.name, {})
+                assert not settings_result.isError and settings_result.structuredContent is not None
+                assert {"schema", "values", "layout"} <= settings_result.structuredContent.keys()
                 resource = await session.read_resource("ui://garmin-personal/configure-v1.html")
                 assert resource.contents
                 print(
-                    "PASS: MCP initialize, seven read-only tools, offline status, settings capability, UI resource."
+                    "PASS: MCP initialize, seven read-only tools, offline status, structured settings, UI resource."
                 )
 
 

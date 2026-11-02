@@ -43,3 +43,11 @@ Security finding: `.env` was already tracked in the pre-existing `f6eb947` initi
 ## Subsequent repository integration
 
 The maintainer merged PR #1 into main. At the user's explicit request, development now continues directly on main and the publish/garmin-personal branch is retired. The previous clean-root-only publication guidance above records the earlier decision; it is not the current installation instruction. The original main history still requires revoking/rotating the old key. README and installation docs now lead with `codex plugin marketplace add deved-it/garmin-connect-plugin --ref main`, followed by desktop installation and masked key configuration, explicitly documenting uv/Git/Python prerequisites and managed updates.
+
+## 0.1.1 — installed desktop settings failure
+
+User reported native macOS settings error after installing 0.1.0. The installed server's offline status responded successfully, excluding a general startup failure in that session. A credential-free runtime reproduction showed that bare `-> dict` settings return annotations produced text-only results and omitted outputSchema in the installed FastMCP version. OpenAI's structured-settings contract requires a SettingsReadResult schema and structuredContent.
+
+Fixed the producer with typed read/update result models and explicit structured_output=True; the read wire field remains `schema` using a Pydantic alias to avoid method-shadowing warnings. The configure action also returns structured content. New real-stdio regression failed on missing outputSchema before the fix, then passed read/action/resource/update and JSON Schema validation. Full suite: 39 passed with warnings treated as errors; Ruff, Pyright and source smoke passed. Smoke now checks actual settings content rather than capability advertisement alone. Package/manifest version bumped to 0.1.1.
+
+Native UI confirmation is still pending after marketplace refresh/restart. The desktop automation runtime failed before acquiring the app due to an OpenSSL configuration-file permission error; no native interactions or credential reads were performed. No Garmin network request was needed.

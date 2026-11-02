@@ -157,6 +157,7 @@ To uninstall, remove/disable the plugin in your host and remove the marketplace 
 
 ## Troubleshooting
 
+- **“Unable to load or save settings” / “Impossibile caricare o salvare le impostazioni” on version 0.1.0:** the settings tools returned text-only JSON instead of the required structured result and output schema. Update to **0.1.1 or newer** with `codex plugin marketplace upgrade garmin-personal-local`, fully quit and reopen ChatGPT Desktop, then check the version in the plugin details. If it still shows 0.1.0, update/reinstall the plugin from the refreshed marketplace and restart again. Removing the installed plugin does not remove its separately stored key. Do not regenerate or paste your API key to fix this protocol error.
 - `NOT_CONFIGURED`: configure a key locally; check empty or stale environment overrides.
 - `AUTH_EXPIRED_OR_REVOKED`: generate a new key in Garmin settings and replace the local one.
 - `FORBIDDEN`: the endpoint is not available to this account/key.
