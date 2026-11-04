@@ -236,7 +236,7 @@ def create_server(services: ServiceContainer | None = None) -> GarminMCP:
 
     @server.tool(
         name="garmin_save_key",
-        title="Save local Garmin key",
+        title="Salva chiave API",
         annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False),
         meta=APP_ONLY,
     )

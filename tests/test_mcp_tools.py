@@ -24,6 +24,8 @@ def test_server_status_no_network_and_settings_no_secret(tmp_path):
         assert str(tmp_path) not in str(result)
         assert tools["garmin_save_key"].meta["ui"]["visibility"] == ["app"]
         assert not tools["garmin_save_key"].annotations.readOnlyHint
+        assert tools["garmin_configure"].title == "Configura chiave API"
+        assert tools["garmin_save_key"].title == "Salva chiave API"
         assert server._mcp_server.version == "0.1.1"
         result = await server.call_tool("garmin_save_key", {"value": "synthetic-private-key"})
         assert "synthetic-private-key" not in str(result)
