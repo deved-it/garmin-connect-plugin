@@ -24,15 +24,15 @@ The GitHub marketplace serves the source package and uses the `uv` command from 
 
 ### 1. Register this GitHub repository
 
-In ChatGPT Desktop, open **Plugins**, open the marketplace/source controls and choose **Aggiungi marketplace di plugin** (Add plugin marketplace). In the dialog shown by the Italian client, enter:
+In ChatGPT Desktop, open **Plugins**, open the marketplace/source controls and choose **Add plugin marketplace**. Enter the following in the dialog:
 
 | Field | What to enter |
 | --- | --- |
-| **Origine** | `https://github.com/deved-it/garmin-connect-plugin.git` |
-| **Riferimento Git** | `main` |
-| **Percorsi selettivi** | Leave empty — do not enter `plugin/codex` or `.agents/plugins` |
+| **Source** | `https://github.com/deved-it/garmin-connect-plugin.git` |
+| **Git reference** | `main` |
+| **Selective paths** | Leave empty — do not enter `plugin/codex` or `.agents/plugins` |
 
-Click **Aggiungi marketplace** and wait for the repository to be fetched. The example text inside an empty field is a placeholder, not a value you need to copy. Menu labels and availability can vary by client version and workspace policy.
+Click **Add marketplace** and wait for the repository to be fetched. The example text inside an empty field is a placeholder, not a value you need to copy. Menu labels and availability can vary by client version and workspace policy.
 
 Point to the repository, **not** a `raw.githubusercontent.com` JSON URL, an individual file or a ZIP URL. The client discovers `.agents/plugins/marketplace.json`; no manual catalog generation is needed. Selective paths must stay empty because this plugin's runtime, lockfile and skills also live elsewhere in the repository.
 
@@ -63,7 +63,7 @@ If the source does not appear, check the marketplace list in the GUI and verify 
 
 ### 3. Configure a Personal API Key
 
-Create your own key in [Garmin Connect → Settings → Personal API Key](https://connect.garmin.com/app/settings/personalApiToken). Then open plugin details/settings → **Collegamento Garmin → Configura chiave API**. Enter it in the masked form and save locally. Never paste it into a conversation or pass it as a command-line argument.
+Create your own key in [Garmin Connect → Settings → Personal API Key](https://connect.garmin.com/app/settings/personalApiToken). Then open plugin details/settings → **Garmin Connection → Configure API Key**. Enter it in the masked form and save locally. Never paste it into a conversation or pass it as a command-line argument.
 
 If the host lacks the form, follow [Native masked configuration](#native-masked-configuration) for the hidden-input fallback. No API key belongs in the GitHub repository or marketplace catalog.
 
@@ -130,7 +130,7 @@ On other platforms (macOS Intel, Windows ARM64, Linux), source installation is t
 
 This alternative is only for an extracted standalone archive or a manual source checkout. For direct GitHub installation, use the GUI repository instructions above instead.
 
-In **Aggiungi marketplace di plugin**, set **Origine** to the absolute path of the persistent extracted folder or checkout. Leave **Riferimento Git** and **Percorsi selettivi** empty for a local folder, then click **Aggiungi marketplace**.
+In **Add plugin marketplace**, set **Source** to the absolute path of the persistent extracted folder or checkout. Leave **Git reference** and **Selective paths** empty for a local folder, then click **Add marketplace**.
 
 Alternatively, from a current Codex CLI:
 
@@ -145,7 +145,7 @@ The repository includes its generated catalog; standalone archives generate the 
 
 ## Native masked configuration
 
-In a host supporting structured plugin settings and MCP Apps, open plugin details/settings → **Collegamento Garmin → Configura chiave API**. Enter the key into the masked field and click **Salva localmente**. The save tool has app-only visibility; do not attempt to call it from the model.
+In a host supporting structured plugin settings and MCP Apps, open plugin details/settings → **Garmin Connection → Configure API Key**. Enter the key into the masked field and click **Save locally**. The save tool has app-only visibility; do not attempt to call it from the model.
 
 If the host does not show these settings or rejects the app bridge, use the terminal `configure` command. For a managed GitHub installation, the host runs a cached copy rather than your current directory. If you know its installed plugin folder, use:
 
