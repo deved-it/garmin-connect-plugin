@@ -7,7 +7,7 @@ Use `garmin_status` to check local configuration. It does not contact Garmin unl
 
 Never ask the user to paste a key into chat. Never read `.env`, key files or token caches. Never call `garmin_save_key` from the model: it is app-only.
 
-Guide users to plugin details/settings → **Collegamento Garmin → Configura chiave API**. This masked MCP App saves the value directly without chat messages or model context. The host must support OpenAI structured settings and MCP Apps.
+Guide users to plugin details/settings → **Garmin Connection → Configure API Key**. This masked MCP App saves the value directly without chat messages or model context. The host must support OpenAI structured settings and MCP Apps.
 
 Fallback: run the bundled executable with `configure`; source: `uv run --project <plugin-folder> --locked garmin-personal-plugin configure`. Input is hidden. Advanced users may set `GARMIN_CONNECT_PERSONAL_API_KEY` in their private `.env`, loaded only from explicit `GARMIN_PLUGIN_ROOT`, never arbitrary working directories.
 

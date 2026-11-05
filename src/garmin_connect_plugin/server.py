@@ -208,7 +208,7 @@ def create_server(services: ServiceContainer | None = None) -> GarminMCP:
                 "layout": [
                     {
                         "kind": "group",
-                        "title": "Collegamento Garmin",
+                        "title": "Garmin Connection",
                         "items": [{"kind": "tool", "tool": "garmin_configure"}],
                     }
                 ],
@@ -226,7 +226,7 @@ def create_server(services: ServiceContainer | None = None) -> GarminMCP:
 
     @server.tool(
         name="garmin_configure",
-        title="Configura chiave API",
+        title="Configure API Key",
         annotations=READ_ONLY,
         meta={"ui": {"visibility": ["app"], "resourceUri": UI_URI}},
         structured_output=True,
@@ -236,7 +236,7 @@ def create_server(services: ServiceContainer | None = None) -> GarminMCP:
 
     @server.tool(
         name="garmin_save_key",
-        title="Save local Garmin key",
+        title="Save API Key",
         annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False),
         meta=APP_ONLY,
     )

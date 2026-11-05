@@ -1,20 +1,20 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; form-action 'none'">
-<title>Collegamento Garmin</title>
+<title>Garmin Connection</title>
 <style>
 :root{color-scheme:light dark;font:15px system-ui,sans-serif}body{margin:0;padding:24px;max-width:560px}h1{font-size:22px;margin:0 0 12px}p{line-height:1.5;opacity:.8}label{display:block;margin:24px 0 8px}input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #8888;border-radius:8px;font:inherit}button{margin-top:16px;padding:10px 20px;border:0;border-radius:8px;background:#16745d;color:white;font:inherit;cursor:pointer}button:disabled{opacity:.5;cursor:wait}#status{min-height:42px}
 </style>
-<h1>Collegamento Garmin</h1>
-<p>La chiave viene salvata sul tuo computer e inviata solo a Garmin. Non incollarla nella conversazione.</p>
+<h1>Garmin Connection</h1>
+<p>Your key is saved on your computer and sent only to Garmin. Do not paste it into the conversation.</p>
 <form id="form" autocomplete="off">
 <label for="key">Garmin Connect Personal API Key</label>
 <input id="key" type="password" autocomplete="off" spellcheck="false" maxlength="8192" required>
-<button id="save" type="submit" disabled>Salva localmente</button>
+<button id="save" type="submit" disabled>Save locally</button>
 </form>
-<p id="status" role="status" aria-live="polite">Connessione all’app in corso…</p>
+<p id="status" role="status" aria-live="polite">Connecting to the app…</p>
 <script>
 (() => {
   'use strict';
@@ -43,14 +43,14 @@
     try {
       const value=key.value;key.value='';
       const result=await rpc('tools/call',{name:'garmin_save_key',arguments:{value}});
-      status.textContent=result.isError?'Salvataggio non riuscito. Usa il comando locale configure.':'Chiave salvata localmente. Le variabili d’ambiente e .env hanno la precedenza.';
+      status.textContent=result.isError?'Save failed. Use the local configure command.':'Key saved locally. Environment variables and .env take precedence.';
     } catch (_) {
-      status.textContent='Modulo non supportato. Usa il comando locale garmin-personal-plugin configure.';
+      status.textContent='This form is not supported. Use the local garmin-personal-plugin configure command.';
     } finally {key.value='';save.disabled=false;}
   });
   rpc('ui/initialize',{protocolVersion:'2026-01-26',appInfo:{name:'garmin-configure',version:'0.1.0'},appCapabilities:{}})
-    .then(() => {window.parent.postMessage({jsonrpc:'2.0',method:'ui/notifications/initialized'},'*');save.disabled=false;status.textContent='Il valore non viene inserito nel contesto del modello.';})
-    .catch(() => {status.textContent='Modulo non supportato: usa il comando locale garmin-personal-plugin configure.';});
+    .then(() => {window.parent.postMessage({jsonrpc:'2.0',method:'ui/notifications/initialized'},'*');save.disabled=false;status.textContent='Your key is not added to the model context.';})
+    .catch(() => {status.textContent='This form is not supported. Use the local garmin-personal-plugin configure command.';});
 })();
 </script>
 </html>

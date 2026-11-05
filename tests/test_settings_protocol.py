@@ -47,6 +47,10 @@ def test_settings_are_structured_and_match_advertised_schemas(tmp_path):
                 uri = action.meta["ui"]["resourceUri"]
                 resource = await session.read_resource(uri)
                 assert resource.contents[0].mimeType == "text/html;profile=mcp-app"
+                configure_ui = resource.contents[0].text
+                assert '<html lang="en">' in configure_ui
+                assert "<h1>Garmin Connection</h1>" in configure_ui
+                assert ">Save locally</button>" in configure_ui
                 update_tool = tools[settings["updateTool"]]
                 assert update_tool.outputSchema is not None
                 assert "values" in update_tool.outputSchema["required"]

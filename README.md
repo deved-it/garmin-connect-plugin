@@ -20,19 +20,19 @@ It **cannot write to Garmin Connect**: no workout upload, scheduling, course imp
 
 You do not need to clone this repository, download a ZIP manually or install **Codex CLI**. Use a compatible ChatGPT Desktop client with the **Add plugin marketplace** dialog. This source-based installation still needs **Git**, **uv** and **Python 3.12+** (installed locally or managed by uv). Git and uv must be available on the desktop app's PATH. See [prerequisites and troubleshooting](docs/INSTALL.md#prerequisites).
 
-**1. Add the marketplace from the GUI:** open **Plugins**, open the marketplace/source controls and choose **Aggiungi marketplace di plugin** (Add plugin marketplace). Fill in the dialog as follows:
+**1. Add the marketplace from the GUI:** open **Plugins**, open the marketplace/source controls and choose **Add plugin marketplace**. Fill in the dialog as follows:
 
-| Field in the Italian UI | Value |
+| Field | Value |
 | --- | --- |
-| **Origine** | `https://github.com/deved-it/garmin-connect-plugin.git` |
-| **Riferimento Git** | `main` |
-| **Percorsi selettivi** | Leave empty |
+| **Source** | `https://github.com/deved-it/garmin-connect-plugin.git` |
+| **Git reference** | `main` |
+| **Selective paths** | Leave empty |
 
-Click **Aggiungi marketplace**. Leave selective paths empty because the plugin needs the whole repository, not just its catalog. This adds the marketplace; it does not install the plugin yet.
+Click **Add marketplace**. Leave selective paths empty because the plugin needs the whole repository, not just its catalog. This adds the marketplace; it does not install the plugin yet.
 
 **2. Install in ChatGPT Desktop:** select the **Garmin Personal (local)** marketplace/source and install **garmin-personal**. Restart the app if needed and start a new locally executed thread. Menu labels and availability depend on client version and workspace policy.
 
-**3. Configure your key:** generate a personal key in [Garmin Connect settings](https://connect.garmin.com/app/settings/personalApiToken), then open the plugin settings → **Collegamento Garmin → Configura chiave API**. Save it in the masked form. Never paste it into the conversation. If the host does not support this form, use the [hidden-input terminal fallback](docs/INSTALL.md#native-masked-configuration).
+**3. Configure your key:** generate a personal key in [Garmin Connect settings](https://connect.garmin.com/app/settings/personalApiToken), then open the plugin settings → **Garmin Connection → Configure API Key**. Save it in the masked form. Never paste it into the conversation. If the host does not support this form, use the [hidden-input terminal fallback](docs/INSTALL.md#native-masked-configuration).
 
 **4. Verify:** ask the plugin to check the connection, using `garmin_status(validate_connection=true)`, then request your first report. On first use, uv prepares the locked Python environment and may need Internet access to download dependencies. This path runs the **source package**, not the standalone executable.
 
@@ -58,10 +58,10 @@ See the [complete installation guide](docs/INSTALL.md) for key precedence, priva
 
 ## Example questions
 
-- “Com’è cambiato il mio sonno nelle ultime quattro settimane?”
-- “Confronta le mie corse di questa settimana con la precedente.”
-- “Mostrami HRV e frequenza cardiaca a riposo, indicando quanti dati sono disponibili.”
-- “Prepara un riepilogo del recupero senza inventare un punteggio.”
+- “How has my sleep changed over the last four weeks?”
+- “Compare my runs this week with last week.”
+- “Show my HRV and resting heart rate, including the number of available samples.”
+- “Prepare a recovery summary without making up a score.”
 
 ## Privacy
 
