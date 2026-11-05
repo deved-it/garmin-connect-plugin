@@ -1,0 +1,24 @@
+name: Bump version on main
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+concurrency:
+  group: version-bump-main
+  cancel-in-progress: false
+jobs:
+  bump:
+    if: "!contains(github.event.head_commit.message, '[version-bump]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/bump_version.py
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml plugin.json src/garmin_connect_plugin/__init__.py uv.lock README.md docs/IMPLEMENTATION_STATUS.md
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: bump version [version-bump]"
+          git push
