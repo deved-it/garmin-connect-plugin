@@ -1,7 +1,6 @@
 """Increment the project's patch version and update its version references."""
 
 import re
-import sys
 from pathlib import Path
 
 
