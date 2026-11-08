@@ -1,6 +1,6 @@
 # Implementation and verification status
 
-Version: **0.1.2 development preview**. Development and GitHub marketplace installation currently follow `main`.
+Version: **0.1.3 development preview**. Development and GitHub marketplace installation currently follow `main`.
 
 0.1.1 fixes the native-settings protocol defect in 0.1.0: `garmin_settings_read` and `garmin_settings_update` now declare typed output schemas and return `structuredContent`. The read schema uses the required wire name `schema` without shadowing Pydantic's deprecated method. The settings action also returns structured output. A real stdio-client regression covers settings discovery, read, action/resource access and update with JSON Schema validation; the standalone smoke check now validates settings content as well. Native ChatGPT UI confirmation still depends on refreshing the installed copy and restarting its server.
 
