@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "garmin-personal",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Explore Garmin activity, sleep, heart rate, HRV, stress, Body Battery and wellness data locally with the official read-only Personal API.",
   "license": "Apache-2.0",
   "keywords": ["garmin", "training", "sleep", "hrv", "local", "read-only"],

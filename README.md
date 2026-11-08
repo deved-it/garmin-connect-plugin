@@ -2,7 +2,7 @@
 
 A local, read-only Garmin Connect plugin for ChatGPT Desktop and Codex. Explore activity, sleep, heart rate, HRV, stress and Body Battery through conversation, without handing your API key to a project-operated server.
 
-**Status: 0.1.1 development preview.** Every push to `main` automatically creates a patch-version commit. The code is not an official Garmin or OpenAI product. GitHub release automation is provided; a build is not a published or certified release. Native-host installation/UI and real-account checks are separate from automated tests.
+**Status: 0.1.2 development preview.** Every push to `main` automatically creates a patch-version commit. The code is not an official Garmin or OpenAI product. GitHub release automation is provided; a build is not a published or certified release. Native-host installation/UI and real-account checks are separate from automated tests.
 
 ## What it does
 
