@@ -1,5 +1,6 @@
 import asyncio
 
+from garmin_connect_plugin import __version__
 from garmin_connect_plugin.config import Settings
 from garmin_connect_plugin.container import ServiceContainer
 from garmin_connect_plugin.server import create_server
@@ -26,7 +27,7 @@ def test_server_status_no_network_and_settings_no_secret(tmp_path):
         assert not tools["garmin_save_key"].annotations.readOnlyHint
         assert tools["garmin_configure"].title == "Configure API Key"
         assert tools["garmin_save_key"].title == "Save API Key"
-        assert server._mcp_server.version == "0.1.1"
+        assert server._mcp_server.version == __version__
         result = await server.call_tool("garmin_save_key", {"value": "synthetic-private-key"})
         assert "synthetic-private-key" not in str(result)
         settings = await server.call_tool("garmin_settings_read", {})
